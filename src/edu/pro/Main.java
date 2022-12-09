@@ -1,42 +1,65 @@
 package edu.pro;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
     public static void main(String[] args) {
-	FullTimeWorker john = new FullTimeWorker("john",1200);
-	FullTimeWorker paul = new FullTimeWorker("paul",1500);
-	List<FullTimeWorker> fullTimeWorkerList = new ArrayList<>();
-	fullTimeWorkerList.add(john);
-	fullTimeWorkerList.add(paul);
-	PartTimeWorker george = new PartTimeWorker("george", 8, 100 );
-	PartTimeWorker ringo = new PartTimeWorker("ringo", 8, 111 );
-	List<PartTimeWorker> parTimeWorkerList = new ArrayList<>();
-	parTimeWorkerList.add(george);
-	parTimeWorkerList.add(ringo);
+        List<Worker> fullTimeWorkers = initFullTimeWorkersList();
+        List<Worker> partTimeWorkers = initPartTimeWorkersList();
 
-	// Total salary
-        int total_salary = john.getSalary() + paul.getSalary() + george.getRate() * george.getHours() + ringo.getRate() * ringo.getHours();
-     // Average salary
-      double average = total_salary /4;
+        List<Worker> allWorkers = Stream.concat(fullTimeWorkers.stream(), partTimeWorkers.stream())
+                .collect(Collectors.toList());
 
-      // min salary
-        List<Integer> salaries = new ArrayList<>();
-        salaries.add(john.getSalary());  salaries.add(paul.getSalary());
-        salaries.add(george.getRate() * george.getHours());  salaries.add(ringo.getRate() * ringo.getHours());
-        salaries.sort(Comparator.comparingInt(Integer::intValue));
-        int min = salaries.get(0);
+        int totalSalary = SalaryUtil.getTotalSalary(allWorkers);
+        double averageSalary = SalaryUtil.getAverageSalary(allWorkers);
+        // Get min max salary
+        MinMax salariesRange = SalaryUtil.getMinMaxSalary(allWorkers);
 
-        // max
-
-        int max = salaries.get(3);
-
+        String output = buildOutput(totalSalary, averageSalary, salariesRange);
+        System.out.println(output);
     }
 
+    private static String buildOutput(int totalSalary, double averageSalary, MinMax salariesRange) {
+        String output;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Total salary: ");
+        stringBuilder.append(totalSalary);
+        stringBuilder.append("\n");
+        stringBuilder.append("Average salary: ");
+        stringBuilder.append(String.format("%.2f", averageSalary));
+        stringBuilder.append("\n");
+        stringBuilder.append("Min salary: ");
+        stringBuilder.append(salariesRange.getMin());
+        stringBuilder.append("\n");
+        stringBuilder.append("Max salary: ");
+        stringBuilder.append(salariesRange.getMax());
+        stringBuilder.append("\n");
+        output = stringBuilder.toString();
+        return output;
+    }
 
+    private static List<Worker> initPartTimeWorkersList() {
+        Worker george = new PartTimeWorker("george", 8, 100);
+        Worker ringo = new PartTimeWorker("ringo", 8, 111);
 
+        List<Worker> parTimeWorkers = new ArrayList<>();
+        parTimeWorkers.add(george);
+        parTimeWorkers.add(ringo);
+        return parTimeWorkers;
+    }
+
+    private static List<Worker> initFullTimeWorkersList() {
+        Worker john = new FullTimeWorker("john",1200);
+        Worker paul = new FullTimeWorker("paul",1500);
+
+        List<Worker> fullTimeWorkers = new ArrayList<>();
+        fullTimeWorkers.add(john);
+        fullTimeWorkers.add(paul);
+        return fullTimeWorkers;
+    }
 
 }

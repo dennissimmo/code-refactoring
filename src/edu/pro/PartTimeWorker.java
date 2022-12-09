@@ -1,32 +1,13 @@
 package edu.pro;
-/*
-  @author   george
-  @project   code-for-refactoring
-  @class  PartTimeWorker
-  @version  1.0.0 
-  @since 06.12.22 - 15.50
-*/
 
-public class PartTimeWorker {
-    private String name;
-    private  int rate;
-    private  int hours;
+public class PartTimeWorker extends Worker {
+    private int rate;
+    private int hours;
 
     public PartTimeWorker(String name, int rate, int hours) {
-        this.name = name;
+        super(name);
         this.rate = rate;
         this.hours = hours;
-    }
-
-    public PartTimeWorker() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getRate() {
@@ -43,5 +24,10 @@ public class PartTimeWorker {
 
     public void setHours(int hours) {
         this.hours = hours;
+    }
+
+    @Override
+    public int getSalary() {
+        return this.rate * this.hours;
     }
 }
